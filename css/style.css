@@ -1,0 +1,90 @@
+.pad {
+    width: 5%;
+    animation-duration: 200ms;
+    border: 1px solid darkgray;
+    margin-right: 1%;
+}
+
+.pad:hover {
+    cursor: pointer;
+}
+
+#pads .row {
+    margin-bottom: 2%;
+    margin-left: 10%;
+}
+
+.mic-image {
+    position: absolute;
+    max-width: 30%;
+    max-height: 30%;
+    bottom: 60%;
+    left: 60%;
+    z-index: 1;
+    visibility: hidden;
+}
+
+/*
+pad colors
+*/
+#row1 .pad {
+    background-color: lightgreen;
+}
+
+#row2 .pad {
+    background-color: lightcoral;
+}
+
+#row3 .pad {
+    background-color: lightgoldenrodyellow;
+}
+
+#row4 .pad {
+    background-color: lightblue;
+}
+
+/*
+Key positioning
+*/
+
+#row2 {
+    position: relative;
+    left: 2%;
+}
+
+#row3 {
+    position: relative;
+    left: 4%;
+}
+
+#row4 {
+    position: relative;
+    left: 6%;
+}
+
+/*
+Light up colors
+*/
+@keyframes light-up-1 {
+    0% { background-color: lightgreen; }
+    30% { background-color: green; }
+    100% { background-color: lightgreen; }
+}
+
+@keyframes light-up-2 {
+    0% { background-color: lightcoral; }
+    30% { background-color: red; }
+    100% { background-color: lightcoral; }
+}
+
+@keyframes light-up-3 {
+    0% { background-color: lightyellow; }
+    30% { background-color: gold; }
+    100% { background-color: lightyellow; }
+}
+
+@keyframes light-up-4 {
+    0% { background-color: lightblue; }
+    30% { background-color: mediumblue; }
+    100% { background-color: lightblue; }
+}
