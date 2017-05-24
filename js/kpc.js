@@ -5,13 +5,23 @@ var context = undefined;
 var speakers = undefined;
 var mic = undefined;
 var micRecorder = undefined;
+
 var sounds = [];
 var recordedSounds = [];
+var sequencedSounds = [];
 var soundNames = [];
 var pads = [];
+var steps = [];
+
 var keysUsed = "1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./";
-var micFeedback = false;
 var pad = $('.pad');
+
+var recordingDuration = 1000;
+var BPM = 120;
+var outputVolume = 0.7;
+
+var micFeedback = false;
+var sequencerOn = false;
 
 // Make a request to find the names of the files to include.
 $.get("sounds.txt", function (data) {
@@ -43,18 +53,26 @@ function init() {
         alert('Web Audio API is not supported in this browser, try Google Chrome.');
     }
 
-    // Load different soundNames
+    // Load different sounds
+    var progressBar = $(".progress-bar")[0];
     for (var i = 0; i < soundNames.length; i++) {
         sounds[i] = new Howl({
-            src: [soundNames[i]]
+            src: [soundNames[i]],
+            volume: outputVolume
         });
+        var percentComplete = parseInt(i / (soundNames.length - 1) * 100);
+        progressBar.style.width = percentComplete + "%";
+        if (percentComplete == 100) {
+            $(".progress").fadeOut("slow", "swing");
+        }
     }
 
     //Listen for keypress
     document.addEventListener('keydown', keyHandler);
 
     //Generate list of pads in DOM
-    pads = $("#pads").children().children();
+    pads = $("#pads").children().find(".pad");
+    steps = $("#sequencer").find(".step");
 
     //Request mic access
     initMic();
@@ -98,6 +116,56 @@ function keyHandler(e) {
     }
 }
 
+function toggleSequencer() {
+    if (sequencerOn) {
+        stopSequencer();
+    } else {
+        startSequencer();
+    }
+}
+
+function startSequencer() {
+    //Start the step sequencer from the beginning.
+    sequencerOn = true;
+    sequencer(0);
+}
+
+function stopSequencer() {
+    sequencerOn = false;
+}
+
+function sequencer(currentBeat) {
+    /*
+     For now this will be 4 bars and count up to 32.
+     (16 quarter notes so 32 1/8s)
+
+     If the number is past that we should start back at 0 ya feel.
+
+     Cryptic hardcoded calculation but to figure out when we need to hit the next beat we want
+     to artificially double the BPM (since we're counting in eights.
+     */
+    if (sequencerOn) {
+        var step = steps[currentBeat];
+        playSound(currentBeat);
+
+        setTimeout(function () {
+            if (currentBeat >= 31) {
+                sequencer(0);
+            }
+            else {
+                sequencer(currentBeat + 1);
+            }
+        }, 60 / BPM / 2 * 1000)
+    }
+}
+
+// Plays all the sounds that are set to play at that beat
+function playSequencedSounds(beatIndex) {
+    for(var i = 0; i < sequencedSounds[beatIndex].length; i++) {
+        playSound(sequencedSounds[beatIndex][i]);
+    }
+}
+
 /*
  MICROPHONE STUFF BELOW
  */
@@ -106,10 +174,16 @@ function recordIntoPad(index) {
     var imageToChange = pad[index].children[0];
 
 
-    micRecorder.start();
+    //Slight delay to start recording
     setTimeout(function () {
-        micRecorder.stop();
-    }, 1000);
+        micRecorder.start();
+        setTimeout(function () {
+            micRecorder.stop();
+        }, recordingDuration);
+    }, 600);
+
+    //Slight delay to stop
+
 
     micRecorder.ondataavailable = function (e) {
         chunks.push(e.data);
@@ -237,4 +311,14 @@ pad.click(function () {
         $(image).attr("src", "images/mic.svg");
     }
 });
+
+//Change color of github icon ooh fancy
+$('#github-icon').hover(
+    function () { //Mouse leave//Mouse Enter
+        $(this).attr('src', 'images/github-light.png');
+    },
+    function () { //Mouse leave
+        $(this).attr('src', 'images/github-dark.png');
+    }
+);
 
