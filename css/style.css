@@ -28,6 +28,7 @@ h1 {
 }
 
 #pads {
+    margin-top: 3%;
     margin-left: 14%;
     margin-right: 14%;
 }
@@ -39,7 +40,7 @@ h1 {
 #github-icon {
     position: relative;
     float: right;
-    max-height: 50px;
+    max-height: 30px;
     width: auto;
     margin-top:2%;
 }

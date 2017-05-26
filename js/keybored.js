@@ -320,6 +320,7 @@ pad.click(function () {
     }
 });
 
+/*
 //Change color of github icon ooh fancy
 $('#github-icon').hover(
     function () { //Mouse leave//Mouse Enter
@@ -329,4 +330,5 @@ $('#github-icon').hover(
         $(this).attr('src', 'images/github-light.png');
     }
 );
+*/
 
