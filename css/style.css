@@ -1,7 +1,7 @@
 body {
     background-color: #696969;
     font-family: 'Lobster', cursive;
-    color: antiquewhite;
+    color: #FCF3CF;
     height: 100%;
     overflow-x: hidden;
 }
@@ -18,8 +18,8 @@ h1 {
     width: 5%;
     padding-bottom: 5%;
     position: relative;
-    animation-duration: 200ms;
-    border: 1px solid black;
+    animation-duration: 130ms;
+    border: 1px outset #FCF3CF;
     margin-right: 1%;
 }
 
@@ -52,6 +52,7 @@ h1 {
     left: 60%;
     z-index: 1;
     visibility: hidden;
+    fill: #FCF3CF;
 }
 
 #instructions {
@@ -59,8 +60,8 @@ h1 {
 }
 
 #sequencer {
-    margin-left: 40%;
-    margin-right: 40%;
+    margin-left: 30%;
+    margin-right: 30%;
 }
 
 #sequencer .row {
@@ -72,8 +73,8 @@ h1 {
     padding-bottom: 2%;
 
     position: relative;
-    border: 1px solid black;
-    margin-right: 0.5%;
+    border: 1px dashed #FCF3CF;
+    margin-right: 2%;
     -webkit-border-radius: 100%;
     -moz-border-radius: 100%;
     border-radius: 100%;
@@ -87,19 +88,19 @@ footer {
 pad colors
 */
 #row1 .pad {
-    background-color: lightgreen;
+    background-color: #52BE80;
 }
 
 #row2 .pad {
-    background-color: lightcoral;
+    background-color: #EC7063;
 }
 
 #row3 .pad {
-    background-color: lightgoldenrodyellow;
+    background-color: #BB8FCE;
 }
 
 #row4 .pad {
-    background-color: lightblue;
+    background-color: #5499C7;
 }
 
 /*
@@ -125,25 +126,25 @@ Key positioning
 Light up colors
 */
 @keyframes light-up-1 {
-    0% { background-color: lightgreen; }
-    30% { background-color: green; }
-    100% { background-color: lightgreen; }
+    0% { background-color: #52BE80; }
+    30% { background-color: #A9DFBF; }
+    100% { background-color: #52BE80; }
 }
 
 @keyframes light-up-2 {
-    0% { background-color: lightcoral; }
-    30% { background-color: red; }
-    100% { background-color: lightcoral; }
+    0% { background-color: #EC7063; }
+    30% { background-color: #F5B7B1; }
+    100% { background-color: #EC7063; }
 }
 
 @keyframes light-up-3 {
-    0% { background-color: lightyellow; }
-    30% { background-color: gold; }
-    100% { background-color: lightyellow; }
+    0% { background-color: #BB8FCE; }
+    30% { background-color: #E8DAEF; }
+    100% { background-color: #BB8FCE; }
 }
 
 @keyframes light-up-4 {
-    0% { background-color: lightblue; }
-    30% { background-color: mediumblue; }
-    100% { background-color: lightblue; }
+    0% { background-color: #5499C7; }
+    30% { background-color: #A9CCE3; }
+    100% { background-color: #5499C7; }
 }

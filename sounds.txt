@@ -11,18 +11,18 @@ drums/perc-808.wav
 drums/snare-808.wav
 drums/tom-808.wav
 
-synth/PhatCap!_AirBell.wav
-synth/PhatCap!_Brass-01.wav
-synth/PhatCap!_FestivalSound-01.wav
-synth/PhatCap!_PhatPipe-01.wav
-synth/PhatCap!_PhatSynth-03.wav
-synth/PhatCap!_Piano-01.wav
-synth/PhatCap!_Pluck-08.wav
-synth/PhatCap!_Quirk-03.wav
-synth/TrapParty_Brass-02.wav
-synth/TrapParty_Brass-03.wav
-synth/TrapParty_SteelDrum-01.wav
-synth/TrapParty_VocalPluck-01.wav
+synth/1.wav
+synth/2.wav
+synth/3.wav
+synth/4.wav
+synth/5.wav
+synth/6.wav
+synth/7.wav
+synth/8.wav
+synth/9.wav
+synth/10.wav
+synth/11.wav
+synth/12.wav
 
 vox/pATCHES - confrontation-6.wav
 vox/pATCHES - deep-1.wav
@@ -36,13 +36,13 @@ vox/pATCHES - gasp.wav
 vox/pATCHES - uh.wav
 vox/pATCHES - vox-1.wav
 
-sfx/TrapParty_Fall-01.wav
-sfx/pATCHES - breath-1.wav
-sfx/TrapParty_RandomSFX-01.wav
-sfx/pATCHES - rapid-1.wav
-sfx/pATCHES - scrapes-1.wav
-sfx/pATCHES - sonics.wav
-sfx/TrapParty_RandomSFX-03.wav
-sfx/pATCHES - trip-1.wav
-sfx/TrapParty_Riser-03.wav
-sfx/pATCHES - wiggle.wav
+sfx/Dirt.wav
+sfx/Horn.wav
+sfx/Pling.wav
+sfx/Robot.wav
+sfx/Rumble.wav
+sfx/Scary.wav
+sfx/Short Rise.wav
+sfx/Spooky Sound.wav
+sfx/Static.wav
+sfx/Weirdness.wav

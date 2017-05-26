@@ -76,6 +76,11 @@ function init() {
 
     //Request mic access
     initMic();
+
+    //Init empty sequencer
+    for(var beat = 0; beat < 32; beat++){
+        sequencedSounds[beat] = [];
+    }
 }
 
 /*
@@ -146,7 +151,7 @@ function sequencer(currentBeat) {
      */
     if (sequencerOn) {
         var step = steps[currentBeat];
-        playSound(currentBeat);
+        playSequencedSounds(currentBeat);
 
         setTimeout(function () {
             if (currentBeat >= 31) {
@@ -166,6 +171,12 @@ function playSequencedSounds(beatIndex) {
     }
 }
 
+function addRandom(){
+    var randomPosition = Math.floor(Math.random() * 32);
+    var randomSound = Math.floor(Math.random() * sounds.length);
+    sequencedSounds[randomPosition].push(randomSound);
+}
+
 /*
  MICROPHONE STUFF BELOW
  */
@@ -181,9 +192,6 @@ function recordIntoPad(index) {
             micRecorder.stop();
         }, recordingDuration);
     }, 600);
-
-    //Slight delay to stop
-
 
     micRecorder.ondataavailable = function (e) {
         chunks.push(e.data);
@@ -315,10 +323,10 @@ pad.click(function () {
 //Change color of github icon ooh fancy
 $('#github-icon').hover(
     function () { //Mouse leave//Mouse Enter
-        $(this).attr('src', 'images/github-light.png');
+        $(this).attr('src', 'images/github-dark.png');
     },
     function () { //Mouse leave
-        $(this).attr('src', 'images/github-dark.png');
+        $(this).attr('src', 'images/github-light.png');
     }
 );
 
