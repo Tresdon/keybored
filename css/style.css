@@ -1,3 +1,4 @@
+/* Global */
 body {
     background-color: #696969;
     font-family: 'Lobster', cursive;
@@ -10,8 +11,11 @@ h1 {
     font-size: 52px;
 }
 
-#div {
-    border: 1px solid white;
+/* Pads */
+#pads {
+    margin-top: 3%;
+    margin-left: 14%;
+    margin-right: 14%;
 }
 
 .pad {
@@ -23,20 +27,47 @@ h1 {
     margin-right: 1%;
 }
 
+
 .pad:hover {
     cursor: pointer;
 }
 
-#pads {
-    margin-top: 3%;
-    margin-left: 14%;
-    margin-right: 14%;
-}
 
 #pads .row {
     margin-bottom: 2%;
 }
 
+/* Inputs */
+button {
+    color: black;
+}
+
+/* Sequencer */
+#sequencer {
+    border-top: 2px dotted #FCF3CF;
+    border-bottom: 2px dotted #FCF3CF;
+    margin-bottom: 3%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+#sequencer .row {
+    margin-top: 2%;
+}
+
+#sequencer .step {
+    width: 2%;
+    padding-bottom: 2%;
+    position: relative;
+    border: 1px dashed #FCF3CF;
+    margin-right: 2%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+}
+
+
+/* Images */
 #github-icon {
     position: relative;
     float: right;
@@ -56,31 +87,7 @@ h1 {
     fill: #FCF3CF;
 }
 
-#instructions {
-    margin-top: 3%;
-}
-
-#sequencer {
-    margin-left: 30%;
-    margin-right: 30%;
-}
-
-#sequencer .row {
-    margin-top: 2%;
-}
-
-#sequencer .step {
-    width: 2%;
-    padding-bottom: 2%;
-
-    position: relative;
-    border: 1px dashed #FCF3CF;
-    margin-right: 2%;
-    -webkit-border-radius: 100%;
-    -moz-border-radius: 100%;
-    border-radius: 100%;
-}
-
+/* Misc */
 footer {
     opacity: 0.6;
 }
