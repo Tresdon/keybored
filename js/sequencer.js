@@ -1,58 +1,70 @@
-var elem = document.getElementById("sequencer");
+var canvas = document.getElementById("sequencerCanvas");
 var sequencedSounds = [];
+paper.install(window);
 
+//Canvas / Square Dimensions
+var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth, sequencerHeight;
 
-// Widths
-var sequencerWidth = elem.offsetWidth;
-var gutterWidth = 10;
-var squareWidth = (sequencerWidth - (32 * (gutterWidth + 4))) / 42;
-var mediumSquareWidth = squareWidth * 1.5;
-var bigSquareWidth = squareWidth * 2;
-
-var sequencerHeight = bigSquareWidth * 1.2;
-
-var params = {width: sequencerWidth, height: sequencerHeight, transparent: true};
+var squaresArray = [];
 
 function initSequencer() {
-    var renderer = PIXI.autoDetectRenderer(params);
-    elem.appendChild(renderer.view);
-    var stage = new PIXI.Container();
-    renderer.render(stage);
+    paper.setup(canvas);
+    updateSquareDimensions(function () {
+        view.viewSize.height = sequencerHeight;
+        drawBeatSquares();
+    });
+
+    view.draw();
+
+    view.onResize = function (event) {
+        updateSquareDimensions(function () {
+            project.activeLayer.children = [];
+            view.viewSize.height = sequencerHeight;
+            drawBeatSquares();
+        });
+    };
+
+    view.onFrame = function (event) {
+        view.update();
+    }
+
 }
 
-/*
 function drawBeatSquares() {
-    var squaresArray = [];
-
-
+    squaresArray = [];
     for (var i = 0; i < 32; i++) {
+        var x = 0;
 
-        var bigsBefore = Math.floor(i / 8) + 1;
-        var mediumsBefore = Math.floor((i / 2) - bigsBefore) + 1;
-
-        var x = 0; //initial offset
-
-        if(squaresArray[i - 1] != undefined){
-            var prevSquareDimensions = squaresArray[i-1].getBoundingClientRect();
-            x = prevSquareDimensions.right + gutterWidth;
+        if (squaresArray[i - 1] != undefined) {
+            x = squaresArray[i - 1].right + gutterWidth;
         }
+        var y = 0;
+        var width = squareWidth;
 
-        console.log(i, x);
-
-        if (i % 8 == 0) {   //New Bar
-            squaresArray.push(two.makeRectangle(x + squareWidth, sequencerHeight / 2, bigSquareWidth, bigSquareWidth));
+        if (i % 8 == 0) {   //New Measure
+            width = bigSquareWidth;
         }
-
         else if (i % 2 == 0) { //On Beat
-            squaresArray.push(two.makeRectangle(x + squareWidth, sequencerHeight / 2, mediumSquareWidth, mediumSquareWidth));
+            width = mediumSquareWidth;
         }
-        else {
-            squaresArray.push(two.makeRectangle(x + squareWidth, sequencerHeight / 2, squareWidth, squareWidth));
-        }
+
+        var square = new Rectangle(x, y, width, width);
+        square.center = new Point(x + (width / 2), sequencerHeight / 2);
+        var path = new Path.Rectangle(square);
+        path.fillColor = 'black';
+        squaresArray.push(square);
     }
 }
-*/
 
+function updateSquareDimensions(callback) {
+    sequencerWidth = canvas.offsetWidth;
+    gutterWidth = 6;
+    squareWidth = (sequencerWidth - (32 * gutterWidth)) / 42;
+    mediumSquareWidth = squareWidth * 1.5;
+    bigSquareWidth = squareWidth * 2;
+    sequencerHeight = bigSquareWidth * 1.5;
+    callback.apply(this, []);
+}
 
 function toggleSequencer() {
     if (sequencerOn) {
