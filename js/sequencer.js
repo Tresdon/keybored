@@ -1,44 +1,53 @@
 var canvas = document.getElementById("sequencerCanvas");
 var sequencedSounds = [];
+var recording = false;
+var scrubber;
 paper.install(window);
 
 //Canvas / Square Dimensions
-var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth, sequencerHeight;
-
+var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth, sequencerHeight, scrubberMovePerFrame;
 var squaresArray = [];
 
+/*
+ Drawing Functions
+ */
 function initSequencer() {
     paper.setup(canvas);
-    updateSquareDimensions(function () {
+    updateSequencerDimensions(function () {
         view.viewSize.height = sequencerHeight;
         drawBeatSquares();
+        initScrubber();
     });
 
     view.draw();
 
     view.onResize = function (event) {
-        updateSquareDimensions(function () {
+        updateSequencerDimensions(function () {
             project.activeLayer.children = [];
             view.viewSize.height = sequencerHeight;
             drawBeatSquares();
+            initScrubber();
         });
     };
 
     view.onFrame = function (event) {
-        view.update();
-    }
-
+        if (sequencerOn) {
+            scrubberMovePerFrame = sequencerWidth / (16 / BPM) / 60;
+            updateScrubberPostion();
+            console.log(scrubber.position.x)
+        }
+    };
 }
 
 function drawBeatSquares() {
     squaresArray = [];
-    for (var i = 0; i < 32; i++) {
-        var x = 0;
+    var x = 10;
+    var y = 0;
 
+    for (var i = 0; i < 32; i++) {
         if (squaresArray[i - 1] != undefined) {
             x = squaresArray[i - 1].right + gutterWidth;
         }
-        var y = 0;
         var width = squareWidth;
 
         if (i % 8 == 0) {   //New Measure
@@ -56,16 +65,38 @@ function drawBeatSquares() {
     }
 }
 
-function updateSquareDimensions(callback) {
+function initScrubber() {
+    scrubber = new Path.Line({
+        from: [5, 0],
+        to: [5, sequencerHeight],
+        strokeColor: 'blue',
+        strokeWidth: 5
+    });
+}
+
+function updateScrubberPostion() {
+    if (scrubber.position.x > sequencerWidth - 5) {
+        scrubber.position.x = 5;
+    }
+    else {
+        scrubber.position.x += scrubberMovePerFrame;
+    }
+}
+
+function updateSequencerDimensions(callback) {
     sequencerWidth = canvas.offsetWidth;
     gutterWidth = 6;
-    squareWidth = (sequencerWidth - (32 * gutterWidth)) / 42;
+    squareWidth = (sequencerWidth - (34 * gutterWidth)) / 42;
     mediumSquareWidth = squareWidth * 1.5;
     bigSquareWidth = squareWidth * 2;
     sequencerHeight = bigSquareWidth * 1.5;
+    scrubberMovePerFrame = sequencerWidth / (BPM / 16) / 60;
     callback.apply(this, []);
 }
 
+/*
+ Feature Functions
+ */
 function toggleSequencer() {
     if (sequencerOn) {
         stopSequencer();
@@ -76,11 +107,16 @@ function toggleSequencer() {
 
 function startSequencer() {
     sequencerOn = true;
+    moveScrubber();
     sequencer(0);
 }
 
 function stopSequencer() {
     sequencerOn = false;
+}
+
+function moveScrubber() {
+
 }
 
 function sequencer(currentBeat) {
@@ -95,7 +131,6 @@ function sequencer(currentBeat) {
      */
 
     if (sequencerOn) {
-        var step = steps[currentBeat];
         playSequencedSounds(currentBeat);
 
         setTimeout(function () {
@@ -123,10 +158,4 @@ function playSequencedSounds(beatIndex) {
     for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
         playSound(sequencedSounds[beatIndex][i]);
     }
-}
-
-function addRandom() {
-    var randomPosition = Math.floor(Math.random() * 32);
-    var randomSound = Math.floor(Math.random() * sounds.length);
-    sequencedSounds[randomPosition].push(randomSound);
 }

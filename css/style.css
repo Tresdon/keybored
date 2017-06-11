@@ -46,9 +46,7 @@ button {
 #sequencer {
     border-top: 2px dotted #FCF3CF;
     border-bottom: 2px dotted #FCF3CF;
-    margin-bottom: 3%;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin: 2% 10%;
 }
 
 #sequencer .row {
