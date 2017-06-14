@@ -32,7 +32,7 @@ function initSequencer() {
 
     };
 
-    metronomeSound = sounds[9].volume(0.2);
+    metronomeSound = sounds[9];
 }
 
 function drawBeatSquares() {
@@ -158,8 +158,7 @@ function sequence(beatIndex, soundIndex) {
 // Plays all the sounds that are set to play at that beat
 function playSequencedSounds(beatIndex) {
     if(metronomeOn && beatIndex % 2 == 0) {
-        console.log(metronomeSound);
-        metronomeSound.play();
+        metronomeSound.volume(0.2).play();
     }
     for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
         playSound(sequencedSounds[beatIndex][i]);
