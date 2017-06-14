@@ -7,37 +7,42 @@ var pads = [];
  */
 function playSound(index) {
     //If no recorded sample, play default
-    if (recordedSounds[index] == undefined) {
-        sounds[index].play();
-    }
-    else {
+    try{
         recordedSounds[index].play();
-    }
+    } catch (e) {sounds[index].play()}
 }
 
 // What to do when a key is pressed. play the sound, light up the button.
 function keyHandler(e) {
     var key = e.key.toLowerCase();
     var index = keysUsed.indexOf(key);
+
+    try{
+        playSound(index);
+        lightUpPad(index);
+    } catch (e){}
+
+    if (recording) {
+        sequence(currentBeat, index);
+    }
+
+}
+
+function lightUpPad(index) {
     var pad = pads[index];
 
-    try {
-        playSound(index);
-        pad.addEventListener('webkitAnimationEnd', function () {
-            this.style.webkitAnimationName = ''
-        });
+    pad.addEventListener('webkitAnimationEnd', function () {
+        this.style.webkitAnimationName = ''
+    });
 
-        if (index < 12)
-            pad.style.webkitAnimationName = 'light-up-1';
-        else if (index < 24)
-            pad.style.webkitAnimationName = 'light-up-2';
-        else if (index < 35)
-            pad.style.webkitAnimationName = 'light-up-3';
-        else
-            pad.style.webkitAnimationName = 'light-up-4';
-
-    } catch (e) {
-    }
+    if (index < 12)
+        pad.style.webkitAnimationName = 'light-up-1';
+    else if (index < 24)
+        pad.style.webkitAnimationName = 'light-up-2';
+    else if (index < 35)
+        pad.style.webkitAnimationName = 'light-up-3';
+    else
+        pad.style.webkitAnimationName = 'light-up-4';
 }
 
 pad.hover(

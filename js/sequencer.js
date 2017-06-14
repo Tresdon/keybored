@@ -1,12 +1,17 @@
 var canvas = document.getElementById("sequencerCanvas");
 var sequencedSounds = [];
 var recording = false;
-var scrubber;
+var metronomeOn = true;
+var currentBeat = 0;
+var sequencerPadColor = '#a9a9a9';
+var activePadColor = '#99a3ee';
 paper.install(window);
 
 //Canvas / Square Dimensions
-var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth, sequencerHeight, scrubberMovePerFrame;
-var squaresArray = [];
+var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth, sequencerHeight;
+var squares = [];
+var squarePaths = [];
+var metronomeSound;
 
 /*
  Drawing Functions
@@ -16,37 +21,29 @@ function initSequencer() {
     updateSequencerDimensions(function () {
         view.viewSize.height = sequencerHeight;
         drawBeatSquares();
-        initScrubber();
     });
-
-    view.draw();
 
     view.onResize = function (event) {
         updateSequencerDimensions(function () {
             project.activeLayer.children = [];
             view.viewSize.height = sequencerHeight;
             drawBeatSquares();
-            initScrubber();
         });
+
     };
 
-    view.onFrame = function (event) {
-        if (sequencerOn) {
-            scrubberMovePerFrame = sequencerWidth / (16 / BPM) / 60;
-            updateScrubberPostion();
-            console.log(scrubber.position.x)
-        }
-    };
+    metronomeSound = sounds[9].volume(0.2);
 }
 
 function drawBeatSquares() {
-    squaresArray = [];
-    var x = 10;
+    squares = [];
+    squarePaths = [];
+    var x = 0;
     var y = 0;
 
     for (var i = 0; i < 32; i++) {
-        if (squaresArray[i - 1] != undefined) {
-            x = squaresArray[i - 1].right + gutterWidth;
+        if (squares[i - 1] != undefined) {
+            x = squares[i - 1].right + gutterWidth;
         }
         var width = squareWidth;
 
@@ -59,38 +56,20 @@ function drawBeatSquares() {
 
         var square = new Rectangle(x, y, width, width);
         square.center = new Point(x + (width / 2), sequencerHeight / 2);
-        var path = new Path.Rectangle(square);
-        path.fillColor = 'black';
-        squaresArray.push(square);
-    }
-}
-
-function initScrubber() {
-    scrubber = new Path.Line({
-        from: [5, 0],
-        to: [5, sequencerHeight],
-        strokeColor: 'blue',
-        strokeWidth: 5
-    });
-}
-
-function updateScrubberPostion() {
-    if (scrubber.position.x > sequencerWidth - 5) {
-        scrubber.position.x = 5;
-    }
-    else {
-        scrubber.position.x += scrubberMovePerFrame;
+        var path = new Path.Rectangle(square, 4);
+        path.fillColor = sequencerPadColor;
+        squares.push(square);
+        squarePaths.push(path);
     }
 }
 
 function updateSequencerDimensions(callback) {
     sequencerWidth = canvas.offsetWidth;
     gutterWidth = 6;
-    squareWidth = (sequencerWidth - (34 * gutterWidth)) / 42;
-    mediumSquareWidth = squareWidth * 1.5;
-    bigSquareWidth = squareWidth * 2;
+    squareWidth = (sequencerWidth - (34 * gutterWidth)) / 51;
+    mediumSquareWidth = squareWidth * 2;
+    bigSquareWidth = squareWidth * 3;
     sequencerHeight = bigSquareWidth * 1.5;
-    scrubberMovePerFrame = sequencerWidth / (BPM / 16) / 60;
     callback.apply(this, []);
 }
 
@@ -99,53 +78,77 @@ function updateSequencerDimensions(callback) {
  */
 function toggleSequencer() {
     if (sequencerOn) {
-        stopSequencer();
+        $("#play-pause-image").attr('src', 'images/media_control_icons/play-green.svg');
+        $("#play-pause-button p").text("Play");
+        pauseSequencer();
     } else {
+        $("#play-pause-image").attr('src', 'images/media_control_icons/pause-blue.svg');
+        $("#play-pause-button p").text("Pause");
         startSequencer();
     }
 }
 
+// Play sequencer from wherever playhead currently is
 function startSequencer() {
     sequencerOn = true;
-    moveScrubber();
-    sequencer(0);
+    sequencer();
 }
 
+//Resets it to the beginning
 function stopSequencer() {
+    sequencerOn = false;
+    currentBeat = 0;
+}
+
+//Stays at whatever the current beat is
+function pauseSequencer() {
     sequencerOn = false;
 }
 
-function moveScrubber() {
-
+function lightUpSquare() {
+    var square = squarePaths[currentBeat];
+    square.style.fillColor = activePadColor;
+    setTimeout(function () {
+        square.style.fillColor = sequencerPadColor;
+    }, 200);
 }
 
-function sequencer(currentBeat) {
+function sequencer() {
     /*
      For now this will be 4 bars and count up to 32.
      (16 quarter notes (beats) so 32 1/8s)
 
-     If the number is past that we should start back at 0 ya feel.
-
      Cryptic hardcoded calculation but to figure out when we need to hit the next beat we want
      to artificially double the BPM (since we're counting in eights);
      */
-
     if (sequencerOn) {
         playSequencedSounds(currentBeat);
 
         setTimeout(function () {
             if (currentBeat >= 31) {
-                sequencer(0);
+                currentBeat = 0;
+                sequencer();
             }
             else {
-                sequencer(currentBeat + 1);
+                currentBeat += 1;
+                sequencer();
             }
         }, 60 / BPM / 2 * 1000)
     }
 }
 
+function toggleRecord() {
+    if(recording) {
+        recording = false;
+        $("#record-button img").attr('src', 'images/media_control_icons/record-black.svg');
+    } else {
+        recording = true;
+        $("#record-button img").attr('src', 'images/media_control_icons/record-red.svg');
+    }
+}
+
 /* sequence a sound at a given beat index */
-function sequence(soundIndex, beatIndex) {
+function sequence(beatIndex, soundIndex) {
     var beatArray = sequencedSounds[beatIndex];
     if (!beatArray.includes(soundIndex)) {
         beatArray.push(soundIndex);
@@ -154,8 +157,44 @@ function sequence(soundIndex, beatIndex) {
 
 // Plays all the sounds that are set to play at that beat
 function playSequencedSounds(beatIndex) {
-    playSound(1);
+    if(metronomeOn && beatIndex % 2 == 0) {
+        console.log(metronomeSound);
+        metronomeSound.play();
+    }
     for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
         playSound(sequencedSounds[beatIndex][i]);
     }
+    lightUpSquare();
 }
+
+//Just change the color of buttons for fanciness ya feel.
+$("#play-pause-button").hover(function () {
+        if(sequencerOn){
+            $("#play-pause-image").attr('src', 'images/media_control_icons/pause-blue.svg')
+        }
+        else{
+            $("#play-pause-image").attr('src', 'images/media_control_icons/play-green.svg')
+        }
+    }, function () {
+        if(sequencerOn){
+            $("#play-pause-image").attr('src', 'images/media_control_icons/pause-black.svg')
+        }
+        else{
+            $("#play-pause-image").attr('src', 'images/media_control_icons/play-black.svg')
+        }
+    }
+);
+
+$("#stop-button").hover(function () {
+    $("#stop-button img").attr('src', 'images/media_control_icons/stop-red.svg')
+}, function () {
+    $("#stop-button img").attr('src', 'images/media_control_icons/stop-black.svg')
+});
+
+$("#record-button").hover(function () {
+    $("#record-button img").attr('src', 'images/media_control_icons/record-red.svg')
+}, function () {
+    if(!recording) {
+        $("#record-button img").attr('src', 'images/media_control_icons/record-black.svg')
+    }
+});

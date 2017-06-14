@@ -80,30 +80,53 @@ function init() {
 
     //Init Sequencer Drawing
     initSequencer();
+
+    //Init GUI Controller
+    initController();
 }
 
 /*
  Update methods
  */
 
-function updateVolume() {
-    var output = $('output[for="outputVolume"]');
-    var value = $('#outputVolume').val();
-    outputVolume = value;
-    output.val(Math.floor(value * 100));
+var Controller = function () {
+    this.bpm = BPM;
+    this.outputVolume = outputVolume;
+    this.micVolume = micVolume;
+    this.toggleMicFeeback = function () {
+        toggleMicFeedback();
+    };
+    this.toggleMetronome = function () {
+        toggleMetronome();
+    };
+};
+
+function initController() {
+    var controller = new Controller();
+    var gui = new dat.GUI({
+        hideable: false
+    });
+    //gui.add(controller, 'toggleMicFeedback').name('Toggle Mic Feedback');
+    //gui.add(controller, 'toggleMetronome').name('Toggle Metronome');
+    var bpmController = gui.add(controller, 'bpm', 10, 200, 1).name('BPM');
+    var outputVolumeController = gui.add(controller, 'outputVolume', 0, 1.0, 0.01).name('Output Volume');
+    var micVolumeController = gui.add(controller, 'micVolume',  0, 1.0, 0.01).name('Input Volume');
+
+    //Event listeners
+    bpmController.onChange(function (value) {
+        BPM = value;
+    });
+
+    outputVolumeController.onChange(function (value) {
+        outputVolume = value;
+        for (var i = 0; i < sounds.length; i++) {
+            sounds[i].volume(outputVolume);
+        }
+    });
+
+    micVolumeController.onChange(function (value) {
+        micVolume = value;
+    });
 }
 
-function updateBPM() {
-    var output = $('output[for="bpm"]');
-    var value = $('#bpm').val();
-    BPM = value;
-    output.val(value);
-}
-
-function updateMicVolume() {
-    var output = $('output[for="micVolume"]');
-    var value = $('#micVolume').val();
-    micVolume = value;
-    output.val(Math.floor(value * 100));
-}
 
