@@ -3,8 +3,9 @@ var sequencedSounds = [];
 var recording = false;
 var metronomeOn = true;
 var currentBeat = 0;
-var sequencerPadColor = '#a9a9a9';
 var activePadColor = '#99a3ee';
+var inputMode = false;
+var inputIndex = 0;
 paper.install(window);
 
 //Canvas / Square Dimensions
@@ -46,20 +47,48 @@ function drawBeatSquares() {
             x = squares[i - 1].right + gutterWidth;
         }
         var width = squareWidth;
+        var padColor = '#a9a9a9';
 
         if (i % 8 == 0) {   //New Measure
             width = bigSquareWidth;
+            padColor = '#878787';
         }
         else if (i % 2 == 0) { //On Beat
             width = mediumSquareWidth;
+            padColor = '#989898';
         }
 
         var square = new Rectangle(x, y, width, width);
         square.center = new Point(x + (width / 2), sequencerHeight / 2);
         var path = new Path.Rectangle(square, 4);
-        path.fillColor = sequencerPadColor;
+        path.fillColor = padColor;
         squares.push(square);
         squarePaths.push(path);
+
+        // On clicking a pad you should be able to insert sounds at that beat
+        path.onClick = function () {
+            for(var i = 0; i < squarePaths.length; i++){
+                var currentSquare = squarePaths[i];
+
+                //
+                if(currentSquare == this) {
+                    this.selected = !this.selected;
+                    if(this.selected) {
+                        inputMode = true;
+                        inputIndex = i;
+                    }
+                    else {
+                        inputMode = false;
+                        clearPadStyles();
+                    }
+                }
+                else {
+                    clearPadStyles();
+                    currentSquare.selected = false;
+                }
+                showSelectedPads(inputIndex);
+            }
+        }
     }
 }
 
@@ -78,12 +107,10 @@ function updateSequencerDimensions(callback) {
  */
 function toggleSequencer() {
     if (sequencerOn) {
-        $("#play-pause-image").attr('src', 'images/media_control_icons/play-green.svg');
-        $("#play-pause-button p").text("Play");
+
         pauseSequencer();
     } else {
-        $("#play-pause-image").attr('src', 'images/media_control_icons/pause-blue.svg');
-        $("#play-pause-button p").text("Pause");
+
         startSequencer();
     }
 }
@@ -91,25 +118,31 @@ function toggleSequencer() {
 // Play sequencer from wherever playhead currently is
 function startSequencer() {
     sequencerOn = true;
+    $("#play-pause-image").attr('src', 'images/media_control_icons/pause-black.svg');
+    $("#play-pause-button p").text("Pause");
     sequencer();
 }
 
 //Resets it to the beginning
 function stopSequencer() {
     sequencerOn = false;
+    pauseSequencer();
     currentBeat = 0;
 }
 
 //Stays at whatever the current beat is
 function pauseSequencer() {
+    $("#play-pause-image").attr('src', 'images/media_control_icons/play-black.svg');
+    $("#play-pause-button p").text("Play");
     sequencerOn = false;
 }
 
 function lightUpSquare() {
     var square = squarePaths[currentBeat];
+    var oldColor = square.style.fillColor;
     square.style.fillColor = activePadColor;
     setTimeout(function () {
-        square.style.fillColor = sequencerPadColor;
+        square.style.fillColor = oldColor;
     }, 200);
 }
 
@@ -162,6 +195,7 @@ function playSequencedSounds(beatIndex) {
     }
     for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
         playSound(sequencedSounds[beatIndex][i]);
+        lightUpPad(sequencedSounds[beatIndex][i]);
     }
     lightUpSquare();
 }

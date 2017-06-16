@@ -68,7 +68,7 @@ button {
     outline: none;
     border: none;
     background-color: transparent;
-    max-width: 100px;
+    max-width: 75px;
     height: auto;
 }
 
@@ -105,19 +105,19 @@ footer {
 /*
 pad colors
 */
-#row1 .pad {
+#row1 div {
     background-color: #52BE80;
 }
 
-#row2 .pad {
+#row2 div {
     background-color: #EC7063;
 }
 
-#row3 .pad {
+#row3 div {
     background-color: #BB8FCE;
 }
 
-#row4 .pad {
+#row4 div {
     background-color: #5499C7;
 }
 

@@ -1,15 +1,18 @@
 var pad = $('.pad');
 var pads = [];
-
+var selectedPads = [];
+var selectedPadColor = 'red';
 
 /*
  PAD STUFF
  */
 function playSound(index) {
     //If no recorded sample, play default
-    try{
+    try {
         recordedSounds[index].play();
-    } catch (e) {sounds[index].play()}
+    } catch (e) {
+        sounds[index].play()
+    }
 }
 
 // What to do when a key is pressed. play the sound, light up the button.
@@ -17,15 +20,14 @@ function keyHandler(e) {
     var key = e.key.toLowerCase();
     var index = keysUsed.indexOf(key);
 
-    try{
+    try {
         playSound(index);
         lightUpPad(index);
-    } catch (e){}
-
-    if (recording) {
-        sequence(currentBeat, index);
+        if (recording) {
+            sequence(currentBeat, index);
+        }
+    } catch (e) {
     }
-
 }
 
 function lightUpPad(index) {
@@ -43,6 +45,30 @@ function lightUpPad(index) {
         pad.style.webkitAnimationName = 'light-up-3';
     else
         pad.style.webkitAnimationName = 'light-up-4';
+}
+
+function clearPadStyles() {
+    for (var i = 0; i < pads.length; i++) {
+        var currentPad = pads[i];
+        var color = $("#row4 .color")[0].style.backgroundColor;
+        if(i < 12) {
+            color = $("#row1 .color")[0].style.backgroundColor;
+        } else if (i < 24) {
+            color = $("#row2 .color")[0].style.backgroundColor;
+
+        } else if (i < 35) {
+            color = $("#row3 .color")[0].style.backgroundColor;
+        }
+        currentPad.style.backgroundColor = color;
+    }
+}
+
+function showSelectedPads(beatIndex) {
+    selectedPads = sequencedSounds[beatIndex];
+    for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
+        var currentPad = pads[sequencedSounds[beatIndex][i]];
+        currentPad.style.backgroundColor = selectedPadColor;
+    }
 }
 
 pad.hover(
@@ -69,15 +95,24 @@ pad.click(function () {
     var index = pad.index(this);    //Index of pad to change
     var image = this.children[0];
 
-    //No sample in pad yet, record one.
-    if (recordedSounds[index] == undefined) {
-        recordedSounds[index] = 'recording';
-        $(image).attr("src", "images/mic-recording.svg");
-        recordIntoPad(index);
+    //If in input mode and click on the pad then just sequence it.
+    if (inputMode) {
+        sequence(inputIndex, index);
+        showSelectedPads(inputIndex);
     }
-    //Sample in pad, clear it
+
+    //Not in input mode so record into the pad
     else {
-        recordedSounds[index] = undefined;
-        $(image).attr("src", "images/mic.svg");
+        //No sample in pad yet, record one.
+        if (recordedSounds[index] == undefined) {
+            recordedSounds[index] = 'recording';
+            $(image).attr("src", "images/mic-recording.svg");
+            recordIntoPad(index);
+        }
+        //Sample in pad, clear it
+        else {
+            recordedSounds[index] = undefined;
+            $(image).attr("src", "images/mic.svg");
+        }
     }
 });
