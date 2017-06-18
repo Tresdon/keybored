@@ -1,7 +1,6 @@
 var pad = $('.pad');
 var pads = [];
-var selectedPads = [];
-var selectedPadColor = 'red';
+var selectedPadColor = 'grey';
 
 /*
  PAD STUFF
@@ -24,7 +23,7 @@ function keyHandler(e) {
         playSound(index);
         lightUpPad(index);
         if (recording) {
-            sequence(currentBeat, index);
+            toggleSequenced(currentBeat, index);
         }
     } catch (e) {
     }
@@ -51,7 +50,7 @@ function clearPadStyles() {
     for (var i = 0; i < pads.length; i++) {
         var currentPad = pads[i];
         var color = $("#row4 .color")[0].style.backgroundColor;
-        if(i < 12) {
+        if (i < 12) {
             color = $("#row1 .color")[0].style.backgroundColor;
         } else if (i < 24) {
             color = $("#row2 .color")[0].style.backgroundColor;
@@ -63,11 +62,13 @@ function clearPadStyles() {
     }
 }
 
-function showSelectedPads(beatIndex) {
-    selectedPads = sequencedSounds[beatIndex];
-    for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
-        var currentPad = pads[sequencedSounds[beatIndex][i]];
-        currentPad.style.backgroundColor = selectedPadColor;
+function refreshSelectedPads(beatIndex) {
+    clearPadStyles();
+    if (inputMode) {
+        for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
+            var currentPad = pads[sequencedSounds[beatIndex][i]];
+            currentPad.style.backgroundColor = selectedPadColor;
+        }
     }
 }
 
@@ -95,10 +96,10 @@ pad.click(function () {
     var index = pad.index(this);    //Index of pad to change
     var image = this.children[0];
 
-    //If in input mode and click on the pad then just sequence it.
+    //If in input mode and click on the pad then just toggleSequenced it.
     if (inputMode) {
-        sequence(inputIndex, index);
-        showSelectedPads(inputIndex);
+        toggleSequenced(inputIndex, index);
+        refreshSelectedPads(inputIndex);
     }
 
     //Not in input mode so record into the pad

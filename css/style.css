@@ -44,8 +44,8 @@ button {
 
 /* Sequencer */
 #sequencer {
-    border-top: 2px dotted #FCF3CF;
-    border-bottom: 2px dotted #FCF3CF;
+    border-top: 2px double #FCF3CF;
+    border-bottom: 2px double #FCF3CF;
     margin: 2% 0%;
 }
 

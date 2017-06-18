@@ -12,6 +12,7 @@ paper.install(window);
 var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth, sequencerHeight;
 var squares = [];
 var squarePaths = [];
+var previewPaths;
 var metronomeSound;
 
 /*
@@ -19,9 +20,11 @@ var metronomeSound;
  */
 function initSequencer() {
     paper.setup(canvas);
+
     updateSequencerDimensions(function () {
         view.viewSize.height = sequencerHeight;
         drawBeatSquares();
+        initStepPreview();
     });
 
     view.onResize = function (event) {
@@ -29,6 +32,7 @@ function initSequencer() {
             project.activeLayer.children = [];
             view.viewSize.height = sequencerHeight;
             drawBeatSquares();
+            initStepPreview();
         });
 
     };
@@ -67,30 +71,92 @@ function drawBeatSquares() {
 
         // On clicking a pad you should be able to insert sounds at that beat
         path.onClick = function () {
-            for(var i = 0; i < squarePaths.length; i++){
+            clearPadStyles();
+            for (var i = 0; i < squarePaths.length; i++) {
                 var currentSquare = squarePaths[i];
 
-                //
-                if(currentSquare == this) {
-                    this.selected = !this.selected;
-                    if(this.selected) {
+                if (currentSquare == this) {
+                    //if it's already selected, deselect
+                    if (this.selected) {
+                        inputMode = false;
+                    }
+                    else {
                         inputMode = true;
                         inputIndex = i;
                     }
-                    else {
-                        inputMode = false;
-                        clearPadStyles();
-                    }
+                    this.selected = !this.selected;
+
                 }
                 else {
-                    clearPadStyles();
                     currentSquare.selected = false;
                 }
-                showSelectedPads(inputIndex);
             }
+            refreshSelectedPads(inputIndex);
         }
     }
 }
+
+// draw on all the squares what is currently selected on that beat
+function initStepPreview() {
+    previewPaths = create2DArray(32, 45);
+
+    //For all squares
+    for (var i = 0; i < squares.length; i++) {
+        var square = squares[i];
+        var gutterWidth = 1;
+        var previewSquareSize = (square.width - (12 * gutterWidth)) / 13;
+
+        //For all sounds
+        for (var j = 0; j < sounds.length; j++) {
+            var sound = j; //The index of the sound
+            var x, y, color, path, rect, index;
+
+            if (sound < 12) { //First Row
+                index = sound;
+                x = index + (previewSquareSize * index) + square.left + 2;
+                y = square.top + 5;
+                color = "#52BE80";
+            }
+            else if (sound < 24) { // Row 2
+                index = sound - 12;
+                x = index + (previewSquareSize * index) + square.left + 3;
+                y = square.top + 10;
+                color = "#EC7063";
+            }
+            else if (sound < 35) { // Row 3
+                index = sound - 24;
+                x = index + (previewSquareSize * index) + square.left + 4;
+                y = square.top + 15;
+                color = "#BB8FCE";
+            }
+            else { //Row 4
+                index = sound - 35;
+                x = index + (previewSquareSize * index) + square.left + 5;
+                y = square.top + 20;
+                color = "#5499C7";
+            }
+
+            rect = new Rectangle(x, y, previewSquareSize, previewSquareSize);
+            path = new Path.Rectangle(rect);
+            path.fillColor = color;
+            path.visible = false;
+            previewPaths[i][sound] = path;
+
+        }
+    }
+}
+
+function create2DArray(rows, cols) {
+    var arr = [];
+    for (var i = 0; i < rows; i++) {
+        arr[i] = [];
+        for (var j = 0; j < cols; j++){
+            arr[i][j] = undefined;
+        }
+    }
+    return arr;
+}
+
 
 function updateSequencerDimensions(callback) {
     sequencerWidth = canvas.offsetWidth;
@@ -107,10 +173,8 @@ function updateSequencerDimensions(callback) {
  */
 function toggleSequencer() {
     if (sequencerOn) {
-
         pauseSequencer();
     } else {
-
         startSequencer();
     }
 }
@@ -125,9 +189,10 @@ function startSequencer() {
 
 //Resets it to the beginning
 function stopSequencer() {
-    sequencerOn = false;
     pauseSequencer();
-    currentBeat = 0;
+    setTimeout(function () {
+        currentBeat = 0;
+    }, 500);
 }
 
 //Stays at whatever the current beat is
@@ -171,7 +236,7 @@ function sequencer() {
 }
 
 function toggleRecord() {
-    if(recording) {
+    if (recording) {
         recording = false;
         $("#record-button img").attr('src', 'images/media_control_icons/record-black.svg');
     } else {
@@ -180,17 +245,26 @@ function toggleRecord() {
     }
 }
 
-/* sequence a sound at a given beat index */
-function sequence(beatIndex, soundIndex) {
-    var beatArray = sequencedSounds[beatIndex];
-    if (!beatArray.includes(soundIndex)) {
-        beatArray.push(soundIndex);
+/* toggle whether or not a sound is sequenced at a given beat index */
+function toggleSequenced(beatIndex, soundIndex) {
+    // If it's not sequenced add it else remove it
+    console.log(previewPaths[beatIndex][soundIndex]);
+    if (!sequencedSounds[beatIndex].includes(soundIndex)) {
+        sequencedSounds[beatIndex].push(soundIndex);
+        previewPaths[beatIndex][soundIndex].visible = true;
+    } else {
+        sequencedSounds[beatIndex].splice(sequencedSounds[beatIndex].indexOf(soundIndex), 1);
+        previewPaths[beatIndex][soundIndex].visible = false;
     }
+}
+
+function isSeqeunced(beatIndex, soundIndex) {
+    return sequencedSounds[beatIndex].includes(soundIndex);
 }
 
 // Plays all the sounds that are set to play at that beat
 function playSequencedSounds(beatIndex) {
-    if(metronomeOn && beatIndex % 2 == 0) {
+    if (metronomeOn && beatIndex % 2 == 0) {
         metronomeSound.volume(0.2).play();
     }
     for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
@@ -202,17 +276,17 @@ function playSequencedSounds(beatIndex) {
 
 //Just change the color of buttons for fanciness ya feel.
 $("#play-pause-button").hover(function () {
-        if(sequencerOn){
+        if (sequencerOn) {
             $("#play-pause-image").attr('src', 'images/media_control_icons/pause-blue.svg')
         }
-        else{
+        else {
             $("#play-pause-image").attr('src', 'images/media_control_icons/play-green.svg')
         }
     }, function () {
-        if(sequencerOn){
+        if (sequencerOn) {
             $("#play-pause-image").attr('src', 'images/media_control_icons/pause-black.svg')
         }
-        else{
+        else {
             $("#play-pause-image").attr('src', 'images/media_control_icons/play-black.svg')
         }
     }
@@ -227,7 +301,7 @@ $("#stop-button").hover(function () {
 $("#record-button").hover(function () {
     $("#record-button img").attr('src', 'images/media_control_icons/record-red.svg')
 }, function () {
-    if(!recording) {
+    if (!recording) {
         $("#record-button img").attr('src', 'images/media_control_icons/record-black.svg')
     }
 });
