@@ -5,6 +5,14 @@ body {
     color: #FCF3CF;
     height: 100%;
     overflow-x: hidden;
+
+    /* No need to select stuff */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 h1 {
@@ -85,6 +93,9 @@ button {
     width: 100%;
 }
 
+.number-input span, input {
+    font-size: 3vw;
+}
 
 /* Images */
 #github-icon {

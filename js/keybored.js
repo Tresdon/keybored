@@ -15,7 +15,6 @@ var keysUsed = "1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./";
 var recordingDuration = 1000;
 var BPM = 120;
 var outputVolume = 0.7;
-var micVolume = 0.7;
 
 var micFeedback = false;
 var sequencerOn = false;
@@ -69,7 +68,7 @@ function init() {
         if (percentComplete == 100) {
             $(".progress").fadeOut("slow", "swing");
             setTimeout(function () {
-                introJs().start();
+                //introJs().start();
             }, 2000)
         }
     }
@@ -90,44 +89,7 @@ function init() {
 
     //Init Sequencer Drawing
     initSequencer();
-
-    //Init GUI Controller
-    initController();
 }
 
-/*
- Update methods
- */
-
-var Controller = function () {
-    this.bpm = BPM;
-    this.outputVolume = outputVolume;
-};
-
-function initController() {
-    var controller = new Controller();
-    var gui = new dat.GUI({
-        hideable: false,
-        autoplace: false
-    });
-
-    var bpmController = gui.add(controller, 'bpm', 10, 200, 1).name('BPM');
-    var outputVolumeController = gui.add(controller, 'outputVolume', 0, 1.0, 0.01).name('Output Volume');
-
-    $('#gui').append(gui.domElement);
-
-
-    //Event listeners
-    bpmController.onChange(function (value) {
-        BPM = value;
-    });
-
-    outputVolumeController.onChange(function (value) {
-        outputVolume = value;
-        for (var i = 0; i < sounds.length; i++) {
-            sounds[i].volume(outputVolume);
-        }
-    });
-}
 
 

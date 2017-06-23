@@ -16,26 +16,29 @@ function playSound(index) {
 
 // What to do when a key is pressed. play the sound, light up the button.
 function keyHandler(e) {
-    var key = e.key.toLowerCase();
-    var index = keysUsed.indexOf(key);
+    if(e.target.tagName != 'INPUT') {  //prevent playing sounds on keyboard entry into text fields
+        var key = e.key.toLowerCase();
+        var index = keysUsed.indexOf(key);
 
-    //on space bar, toggle sequencer
-    if(key == ' '){
-        e.preventDefault();
-        toggleSequencer();
-    }
+        //on space bar, toggle sequencer
+        if (key == ' ') {
+            e.preventDefault();
+            toggleSequencer();
+        }
 
-    try {
-        playSound(index);
-        lightUpPad(index);
-        if (inputMode) {
-            toggleSequenced(inputIndex, index);
-            refreshSelectedPads(inputIndex);
+        try {
+            playSound(index);
+            lightUpPad(index);
+            if (inputMode) {
+                toggleSequenced(inputIndex, index);
+                refreshSelectedPads(inputIndex);
+            }
+            if (recording) {
+                toggleSequenced(currentBeat, index);
+                refreshSelectedPads(currentBeat);
+            }
+        } catch (e) {
         }
-        if (recording) {
-            toggleSequenced(currentBeat, index);
-        }
-    } catch (e) {
     }
 }
 
@@ -74,7 +77,7 @@ function clearPadStyles() {
 
 function refreshSelectedPads(beatIndex) {
     clearPadStyles();
-    if (inputMode) {
+    if (inputMode || recording) {
         for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
             var currentPad = pads[sequencedSounds[beatIndex][i]];
             currentPad.style.backgroundColor = selectedPadColor;

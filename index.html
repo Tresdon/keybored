@@ -215,13 +215,12 @@
     <div class="row" id="controls" data-step="3" data-position="top" data-intro="These are some helpful buttons to control the sequencer.
     Let's walk through them real quick.">
 
-        <div class="col-xs-offset-4 col-xs-1" data-step="4" data-position="top" data-intro="The play/pause button. Can also be triggered with
+        <div class="col-xs-offset-3 col-xs-1" data-step="4" data-position="top" data-intro="The play/pause button. Can also be triggered with
         the space bar. Pausing the sequencer remembers the beat so when you play it again it will play from that beat.">
             <button class="sequencer-control" id="play-pause-button" onclick="toggleSequencer()">
                 <img src="images/media_control_icons/play-black.svg" id="play-pause-image">
             </button>
             <p class="text-center">Play</p>
-
         </div>
 
         <div class="col-xs-1" data-step="5" data-position="top" data-intro="The stop button. This will pause the sequencer and when you next
@@ -231,6 +230,7 @@
             </button>
             <p class="text-center">Stop</p>
         </div>
+
         <div class="col-xs-1" data-step="6" data-position="top" data-intro="The record button. This will allow you to record your playing
         into the sequencer directly. Press this button to arm the recording, then play the sequencer, and each sound
         you play will be sequenced.">
@@ -239,6 +239,7 @@
             </button>
             <p class="text-center">Record</p>
         </div>
+
         <div class="col-xs-1" data-step="7" data-position="top" data-intro="The Metronome button. If this is enabled (yellow) then you will
         hear a faint tick on each pulse of the beat. This is used to help keep time.">
             <button class="sequencer-control" id="metronome-button" onclick="toggleMetronome()">
@@ -247,16 +248,17 @@
             <p class="text-center">Metronome</p>
         </div>
 
+        <div class="col-xs-1 number-input text-center">
+            <input class="sequencer-control " id="volume-input" value="70">
+            <p class="text-center">Volume</p>
+        </div>
+
+        <div class="col-xs-1 number-input text-center">
+            <input class="sequencer-control" id="bpm-input" value="120">
+            <p class="text-center">BPM</p>
+        </div>
+
     </div>
-
-
-    <footer class="text-center modal-footer" style="margin-top: 10%;">
-        <small class="text-center">This application works best in Google Chrome v58 (Beta channel as of 3.6.17).
-            Other versions are currently using an <code>&lt;audio&gt;</code> fallback which does not allow
-            simultaneous triggering of recorded sounds. :(
-        </small>
-    </footer>
-</div>
 </div>
 
 <script src="js/jquery.min.js"></script>
@@ -264,6 +266,7 @@
 <script src="js/paper-full.min.js"></script>
 <script src="js/howler.min.js"></script>
 <script src="js/intro.min.js"></script>
+<script src="js/draggable-number.min.js"></script>
 <script src="js/dat.gui.min.js"></script>
 <script src="js/pads.js"></script>
 <script src="js/sequencer.js"></script>
