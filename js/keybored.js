@@ -39,12 +39,11 @@ $.get("sounds.txt", function (data) {
 // Initialize everything
 function init() {
 
-    if(location.hostname != 'localhost') {
-        if (location.protocol != 'https:');
-        {location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-        }
+    if (location.protocol != 'https:');
+    {
+        location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
     }
-
+    
 
     // Initialize web audio API
     try {
