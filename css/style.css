@@ -16,6 +16,7 @@ h1 {
     margin-top: 3%;
     margin-left: 14%;
     margin-right: 14%;
+    overflow: hidden;
 }
 
 .pad {
@@ -25,6 +26,10 @@ h1 {
     animation-duration: 130ms;
     border: 1px outset #FCF3CF;
     margin-right: 1%;
+}
+
+.tooltip {
+    color: black;
 }
 
 
@@ -70,6 +75,10 @@ button {
     background-color: transparent;
     max-width: 75px;
     height: auto;
+}
+
+.sequencer-control + p {
+    color: black;
 }
 
 .sequencer-control img {

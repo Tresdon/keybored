@@ -179,11 +179,22 @@ function toggleSequencer() {
     }
 }
 
+
+function toggleMetronome() {
+    metronomeOn = !metronomeOn;
+    if(metronomeOn){
+        $('#metronome-button img').attr('src', 'images/media_control_icons/metronome-yellow.svg')
+    }
+    else {
+        $('#metronome-button img').attr('src', 'images/media_control_icons/metronome-black.svg')
+    }
+}
+
 // Play sequencer from wherever playhead currently is
 function startSequencer() {
     sequencerOn = true;
     $("#play-pause-image").attr('src', 'images/media_control_icons/pause-black.svg');
-    $("#play-pause-button p").text("Pause");
+    $("#play-pause-button + p").text("Pause");
     sequencer();
 }
 
@@ -198,7 +209,7 @@ function stopSequencer() {
 //Stays at whatever the current beat is
 function pauseSequencer() {
     $("#play-pause-image").attr('src', 'images/media_control_icons/play-black.svg');
-    $("#play-pause-button p").text("Play");
+    $("#play-pause-button + p").text("Play");
     sequencerOn = false;
 }
 
@@ -303,5 +314,13 @@ $("#record-button").hover(function () {
 }, function () {
     if (!recording) {
         $("#record-button img").attr('src', 'images/media_control_icons/record-black.svg')
+    }
+});
+
+$("#metronome-button").hover(function () {
+    $("#metronome-button img").attr('src', 'images/media_control_icons/metronome-yellow.svg')
+}, function () {
+    if (!metronomeOn) {
+        $("#metronome-button img").attr('src', 'images/media_control_icons/metronome-black.svg')
     }
 });

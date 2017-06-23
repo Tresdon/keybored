@@ -40,6 +40,13 @@ $.get("sounds.txt", function (data) {
 // Initialize everything
 function init() {
 
+    if(location.hostname != 'localhost') {
+        if (location.protocol != 'https:');
+        {location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+    }
+
+
     // Initialize web audio API
     try {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -61,6 +68,9 @@ function init() {
         progressBar.style.width = percentComplete + "%";
         if (percentComplete == 100) {
             $(".progress").fadeOut("slow", "swing");
+            setTimeout(function () {
+                introJs().start();
+            }, 2000)
         }
     }
 
@@ -92,25 +102,20 @@ function init() {
 var Controller = function () {
     this.bpm = BPM;
     this.outputVolume = outputVolume;
-    this.micVolume = micVolume;
-    this.toggleMicFeeback = function () {
-        toggleMicFeedback();
-    };
-    this.toggleMetronome = function () {
-        toggleMetronome();
-    };
 };
 
 function initController() {
     var controller = new Controller();
     var gui = new dat.GUI({
-        hideable: false
+        hideable: false,
+        autoplace: false
     });
-    //gui.add(controller, 'toggleMicFeedback').name('Toggle Mic Feedback');
-    //gui.add(controller, 'toggleMetronome').name('Toggle Metronome');
+
     var bpmController = gui.add(controller, 'bpm', 10, 200, 1).name('BPM');
     var outputVolumeController = gui.add(controller, 'outputVolume', 0, 1.0, 0.01).name('Output Volume');
-    var micVolumeController = gui.add(controller, 'micVolume',  0, 1.0, 0.01).name('Input Volume');
+
+    $('#gui').append(gui.domElement);
+
 
     //Event listeners
     bpmController.onChange(function (value) {
@@ -122,10 +127,6 @@ function initController() {
         for (var i = 0; i < sounds.length; i++) {
             sounds[i].volume(outputVolume);
         }
-    });
-
-    micVolumeController.onChange(function (value) {
-        micVolume = value;
     });
 }
 

@@ -19,9 +19,19 @@ function keyHandler(e) {
     var key = e.key.toLowerCase();
     var index = keysUsed.indexOf(key);
 
+    //on space bar, toggle sequencer
+    if(key == ' '){
+        e.preventDefault();
+        toggleSequencer();
+    }
+
     try {
         playSound(index);
         lightUpPad(index);
+        if (inputMode) {
+            toggleSequenced(inputIndex, index);
+            refreshSelectedPads(inputIndex);
+        }
         if (recording) {
             toggleSequenced(currentBeat, index);
         }
@@ -76,7 +86,7 @@ pad.hover(
     //Mouse Enter
     function () {
         //If there's nothing in the pad, show the mic icon
-        if (recordedSounds[pad.index(this)] == undefined) {
+        if (recordedSounds[pad.index(this)] == undefined && !inputMode) {
             var micImage = this.children[0];
             micImage.style.visibility = 'visible';
         }

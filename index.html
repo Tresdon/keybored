@@ -6,7 +6,8 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/range.css" rel="stylesheet">
+    <link href="css/introjs.css" rel="stylesheet">
+    <link href="css/introjs-flattener.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
     <link rel="icon" href="https://tresdonjones.com/img/favicon.ico">
 </head>
@@ -16,11 +17,12 @@
 
 
     <div class="row" style="margin-top: 1%;">
-        <div class="col-xs-8">
-            <h1>keybored</h1>
+        <div class="col-xs-6">
+            <h1>Keybored</h1>
         </div>
-        <a href="https://github.com/Tresdon/keybored" target="_blank">
-            <img class="col-xs-4 img-responsive" id="github-icon" src="images/github-light.png">
+        <div class="col-xs-2" id="gui"></div>
+        <a class="col-xs-4" href="https://github.com/Tresdon/keybored" target="_blank">
+            <img class="img-responsive" id="github-icon" src="images/github-light.png">
         </a>
     </div>
 
@@ -36,7 +38,11 @@
         </div>
     </div>
 
-    <div class="row center-block text-center">
+    <div class="row center-block text-center" data-step="1"
+         data-intro="Hey there!
+         This short tutorial should only take about a minute or so
+         but if at any point it's not what you need in life feel free to use that <code>Skip</code> button down there.
+         This thing here is the 'keybored'. Press some buttons on your keyboard and see what happens :)">
         <div id="pads" class="center-block text-center col-xs-12">
 
             <!-- First row of pads, numbers 1-= -->
@@ -198,53 +204,56 @@
     </div>
 
 
-    <div class="row" id="sequencer">
+    <div class="row" id="sequencer" data-step="2" data-position="top"
+         data-intro="This is the sequencer. This is going to allow you to create some sick beats to show to your
+         grandma, goldfish, government, etc. Click on one of these pads and then strike keys on your keyboard.
+         From now on that sound will always play on this beat unless you unselect it (via striking the key again
+         or just clicking on it).">
         <canvas class="col-xs-12" id="sequencerCanvas" resize></canvas>
     </div>
 
-    <div class="row" id="controls">
+    <div class="row" id="controls" data-step="3" data-position="top" data-intro="These are some helpful buttons to control the sequencer.
+    Let's walk through them real quick.">
 
-        <button class="col-xs-1 sequencer-control col-xs-offset-5" id="play-pause-button" onclick="toggleSequencer()">
-            <img src="images/media_control_icons/play-black.svg" id="play-pause-image">
-            <p>Play</p>
-        </button>
+        <div class="col-xs-offset-4 col-xs-1" data-step="4" data-position="top" data-intro="The play/pause button. Can also be triggered with
+        the space bar. Pausing the sequencer remembers the beat so when you play it again it will play from that beat.">
+            <button class="sequencer-control" id="play-pause-button" onclick="toggleSequencer()">
+                <img src="images/media_control_icons/play-black.svg" id="play-pause-image">
+            </button>
+            <p class="text-center">Play</p>
 
-        <button class="col-xs-1 sequencer-control" id="stop-button" onclick="stopSequencer()">
-            <img src="images/media_control_icons/stop-black.svg">
-            <p>Stop</p>
-        </button>
-
-        <button class="col-xs-1 sequencer-control" id="record-button" onclick="toggleRecord()">
-            <img src="images/media_control_icons/record-black.svg">
-            <p>Record</p>
-        </button>
-
-    </div>
-
-
-    <div class="row" id="instructions" style="visibility: hidden">
-        <div class="col-sm-offset-2 col-sm-8 text-center">
-            <p class="small">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla fringilla augue
-                pellentesque, sodales ex posuere, porttitor quam. Vivamus dapibus finibus viverra. Nulla vulputate
-                dolor
-                a mollis blandit. Mauris finibus tristique arcu, ut lacinia sapien faucibus vel. Nunc nibh quam,
-                posuere
-                eget metus semper, vestibulum malesuada magna. Pellentesque facilisis facilisis metus ac efficitur.
-                In
-                sagittis, mauris vel cursus varius, lacus ligula lobortis lorem, quis rutrum ex lorem et erat. Morbi
-                tincidunt, metus id blandit condimentum, odio ipsum fermentum lectus, non elementum lacus purus vel
-                ante.
-            </p>
         </div>
-        <div class="col-sm-offset-2"></div>
+
+        <div class="col-xs-1" data-step="5" data-position="top" data-intro="The stop button. This will pause the sequencer and when you next
+        play it, it will start from the beginning.">
+            <button class="sequencer-control" id="stop-button" onclick="stopSequencer()">
+                <img src="images/media_control_icons/stop-black.svg">
+            </button>
+            <p class="text-center">Stop</p>
+        </div>
+        <div class="col-xs-1" data-step="6" data-position="top" data-intro="The record button. This will allow you to record your playing
+        into the sequencer directly. Press this button to arm the recording, then play the sequencer, and each sound
+        you play will be sequenced.">
+            <button class="sequencer-control" id="record-button" onclick="toggleRecord()">
+                <img src="images/media_control_icons/record-black.svg">
+            </button>
+            <p class="text-center">Record</p>
+        </div>
+        <div class="col-xs-1" data-step="7" data-position="top" data-intro="The Metronome button. If this is enabled (yellow) then you will
+        hear a faint tick on each pulse of the beat. This is used to help keep time.">
+            <button class="sequencer-control" id="metronome-button" onclick="toggleMetronome()">
+                <img src="images/media_control_icons/metronome-yellow.svg">
+            </button>
+            <p class="text-center">Metronome</p>
+        </div>
+
     </div>
 
 
     <footer class="text-center modal-footer" style="margin-top: 10%;">
-        <small>This application works best in Google Chrome v58 (Beta channel as of 3.6.17).
+        <small class="text-center">This application works best in Google Chrome v58 (Beta channel as of 3.6.17).
             Other versions are currently using an <code>&lt;audio&gt;</code> fallback which does not allow
-            simultaneous
-            triggering of recorded sounds. :(
+            simultaneous triggering of recorded sounds. :(
         </small>
     </footer>
 </div>
@@ -254,6 +263,7 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/paper-full.min.js"></script>
 <script src="js/howler.min.js"></script>
+<script src="js/intro.min.js"></script>
 <script src="js/dat.gui.min.js"></script>
 <script src="js/pads.js"></script>
 <script src="js/sequencer.js"></script>
