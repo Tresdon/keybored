@@ -3,7 +3,8 @@ var sequencedSounds = [];
 var recording = false;
 var metronomeOn = true;
 var currentBeat = 0;
-var activePadColor = '#d2797a';
+var activePadColor = '#95b8af';
+var recordingColor = '#d2797a';
 var playhead, bpmControl, volumeControl;
 var inputMode = false;
 var inputIndex = 0;
@@ -14,7 +15,6 @@ var sequencerWidth, gutterWidth, squareWidth, mediumSquareWidth, bigSquareWidth,
 var squares = [];
 var squarePaths = [];
 var squareOverlays = [];
-var previewPaths;
 var metronomeSound;
 
 /*
@@ -75,13 +75,13 @@ function drawBeatSquares() {
         for (var j = 0; j < 4; j++) {
             var rect = new Path.Rectangle(square.x, square.y + (j * width / 4), width, width / 4);
             rect.strokeColor = padColor;
-            if(j == 0) {
+            if (j == 0) {
                 rect.fillColor = '#52BE80'
-            } else if(j == 1) {
+            } else if (j == 1) {
                 rect.fillColor = '#EC7063'
-            } else if(j == 2) {
+            } else if (j == 2) {
                 rect.fillColor = '#BB8FCE'
-            } else  {
+            } else {
                 rect.fillColor = '#5499C7'
             }
             rect.opacity = 0;
@@ -89,27 +89,29 @@ function drawBeatSquares() {
 
             // On clicking a pad you should be able to insert sounds at that beat
             rect.onClick = function () {
-                clearPadStyles();
-                for (var i = 0; i < squarePaths.length; i++) {
-                    var currentSquare = squarePaths[i];
+                if (!recording || !sequencerOn) {   //Don't allow insert if it's recording and playing
+                    clearPadStyles();
+                    for (var i = 0; i < squarePaths.length; i++) {
+                        var currentSquare = squarePaths[i];
 
-                    //We've found the square
-                    if (currentSquare.bounds.contains(this.bounds)) {
-                        //if it's already selected, deselect
-                        if (currentSquare.selected) {
-                            inputMode = false;
+                        //We've found the square
+                        if (currentSquare.bounds.contains(this.bounds)) {
+                            //if it's already selected, deselect
+                            if (currentSquare.selected) {
+                                inputMode = false;
+                            }
+                            else {
+                                inputMode = true;
+                                inputIndex = i;
+                            }
+                            currentSquare.selected = !currentSquare.selected;
                         }
                         else {
-                            inputMode = true;
-                            inputIndex = i;
+                            currentSquare.selected = false;
                         }
-                        currentSquare.selected = !currentSquare.selected;
                     }
-                    else {
-                        currentSquare.selected = false;
-                    }
+                    showSelectedPads(inputIndex);
                 }
-                refreshSelectedPads(inputIndex);
             };
         }
 
@@ -120,7 +122,8 @@ function drawBeatSquares() {
     playhead = new Path.RegularPolygon(new Point(0, 0), 3, 10);
     playhead.rotate(180);
     playhead.position = new Point((squares[0].x + squares[0].width / 2), 5);
-    playhead.fillColor = '#d2797a';
+    playhead.fillColor = activePadColor;
+    project.activeLayer.selectedColor = recordingColor
 }
 
 function updateSequencerDimensions(callback) {
@@ -138,8 +141,13 @@ function updateBPM() {
 }
 
 function updateVolume() {
-    for (var i = 0; i < sounds.length; i++) {
-        sounds[i].volume(volumeControl.get() / 100);
+    if (isNaN(volumeControl.get())) {
+        volumeControl.set(40);
+    }
+    else {
+        for (var i = 0; i < sounds.length; i++) {
+            sounds[i].volume(volumeControl.get() / 100);
+        }
     }
 }
 
@@ -155,11 +163,11 @@ function initDraggableNumbers() {
         threshold: 5
     });
 
-    //Annoying but draggable-input.js I can't figure out how to listen to onchange events
+    //sloppy but with draggable-input.js I can't figure out how to listen to onchange events
     setInterval(function () {
         updateBPM();
         updateVolume();
-    }, 300);
+    }, 500);
 }
 
 /*
@@ -188,6 +196,9 @@ function startSequencer() {
     sequencerOn = true;
     $("#play-pause-image").attr('src', 'images/media_control_icons/pause-black.svg');
     $("#play-pause-button + p").text("Pause");
+    if (recording) {
+        playhead.fillColor = recordingColor;
+    }
     sequencer();
 }
 
@@ -206,15 +217,27 @@ function pauseSequencer() {
     $("#play-pause-image").attr('src', 'images/media_control_icons/play-black.svg');
     $("#play-pause-button + p").text("Play");
     sequencerOn = false;
+    playhead.fillColor = activePadColor;
 }
 
 function lightUpSquare() {
     var square = squarePaths[currentBeat];
     var oldColor = square.style.fillColor;
-    square.style.fillColor = activePadColor;
+    if (recording) {
+        square.style.fillColor = recordingColor;
+    } else {
+        square.style.fillColor = activePadColor;
+    }
     setTimeout(function () {
         square.style.fillColor = oldColor;
     }, 200);
+}
+
+function deselectAllSquares() {
+    inputMode = false;
+    for (var i = 0; i < squarePaths.length; i++) {
+        squarePaths[i].selected = false;
+    }
 }
 
 function sequencer() {
@@ -248,32 +271,78 @@ function toggleRecord() {
     if (recording) {
         recording = false;
         $("#record-button img").attr('src', 'images/media_control_icons/record-black.svg');
+        playhead.fillColor = activePadColor;
     } else {
+        playhead.fillColor = recordingColor;
         recording = true;
         $("#record-button img").attr('src', 'images/media_control_icons/record-red.svg');
+        deselectAllSquares();
+        if (!sequencerOn) {
+            startSequencer();
+        }
     }
 }
 
 /* toggle whether or not a sound is sequenced at a given beat index */
 function toggleSequenced(beatIndex, soundIndex) {
     var row = 3;
-    if(soundIndex < 12) {row = 0;}
-    else if(soundIndex < 24) {row = 1;}
-    else if(soundIndex < 35) {row = 2;}
+    if (soundIndex < 12) {
+        row = 0;
+    }
+    else if (soundIndex < 24) {
+        row = 1;
+    }
+    else if (soundIndex < 35) {
+        row = 2;
+    }
     // If it's not sequenced add it else remove it
     if (!sequencedSounds[beatIndex].includes(soundIndex)) {
         sequencedSounds[beatIndex].push(soundIndex);
-        squareOverlays[beatIndex][row].opacity += .15;
 
     } else {
         sequencedSounds[beatIndex].splice(sequencedSounds[beatIndex].indexOf(soundIndex), 1);
-        squareOverlays[beatIndex][row].opacity -= .15;
-
     }
+    //logistic function for more dramatic increase in opacity in the beginning.
+    var opac = 0;
+    var length = getLengthOfSequencedRow(beatIndex, row);
+    if (length > 0) {
+        opac = 0.5;
+    }
+    if (length > 1) {
+        opac = 0.7
+    }
+    if (length > 2) {
+        opac = 0.8
+    }
+    if (length > 4) {
+        opac = 1;
+    }
+    squareOverlays[beatIndex][row].opacity = opac;
 }
 
-function isSeqeunced(beatIndex, soundIndex) {
-    return sequencedSounds[beatIndex].includes(soundIndex);
+function getLengthOfSequencedRow(index, row) {
+    var rowLength = 0;
+    var beatSounds = sequencedSounds[index];
+    if (row == 0) {
+        for (var i = 0; i < beatSounds.length; i++) {
+            if (beatSounds[i] < 12) rowLength++;
+        }
+    } else if (row == 1) {
+        for (var i = 0; i < sequencedSounds.length; i++) {
+            if (beatSounds[i] >= 12 && beatSounds[i] < 24) rowLength++;
+        }
+    } else if (row == 2) {
+        for (var i = 0; i < sequencedSounds.length; i++) {
+            if (beatSounds[i] >= 24 && beatSounds[i] < 35) rowLength++;
+        }
+    } else if (row == 3) {
+        for (var i = 0; i < sequencedSounds.length; i++) {
+            if (beatSounds[i] >= 35) rowLength++;
+        }
+    }
+    return rowLength;
+
+
 }
 
 // Plays all the sounds that are set to play at that beat
