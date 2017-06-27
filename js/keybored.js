@@ -9,12 +9,14 @@ var micRecorder = undefined;
 var sounds = [];
 var soundNames = [];
 var recordedSounds = [];
+var images = [];
 
 var keysUsed = "1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./";
 
 var recordingDuration = 1000;
 var BPM = 120;
 var outputVolume = 0.7;
+var loadedCount = 0;
 
 var micFeedback = false;
 var sequencerOn = false;
@@ -49,21 +51,18 @@ function init() {
     }
 
     // Load different sounds
-    var progressBar = $(".progress-bar")[0];
     for (var i = 0; i < soundNames.length; i++) {
         sounds[i] = new Howl({
             src: [soundNames[i]],
-            volume: outputVolume
+            volume: outputVolume,
+            onload: function () {
+                updateProgress();
+            }
         });
-        var percentComplete = parseInt(i / (soundNames.length - 1) * 100);
-        progressBar.style.width = percentComplete + "%";
-        if (percentComplete == 100) {
-            $(".progress").fadeOut("slow", "swing");
-            setTimeout(function () {
-                //introJs().start();
-            }, 2000)
-        }
     }
+
+    //Preload images
+    preloadImages();
 
     //Listen for keypress
     document.addEventListener('keydown', keyHandler);
@@ -83,5 +82,47 @@ function init() {
     initSequencer();
 }
 
+function updateProgress() {
+    loadedCount += 1;
+    var progressBar = $(".progress-bar")[0];
+    var totalToLoad = soundNames.length + images.length;
+    var percentComplete = parseInt((loadedCount / totalToLoad) * 100);
+    progressBar.style.width = percentComplete + "%";
+    if (percentComplete == 100) {
+        $(".progress").fadeOut("slow", "swing");
+        setTimeout(function () {
+            //Show the user tutorial if they've never been here before.
+            if(localStorage.getItem('visited') == null){
+                introJs().start();
+                localStorage.setItem('visited', true);
+            }
+        }, 2000)
+    }
+}
+
+function preloadImages() {
+    images = [
+        'media_control_icons/metronome-black.svg',
+        'media_control_icons/metronome-yellow.svg',
+        'media_control_icons/pause-blue.svg',
+        'media_control_icons/play-green.svg',
+        'media_control_icons/record-red.svg',
+        'media_control_icons/stop-red.svg',
+        'clear.svg',
+        'github-dark.png',
+        'github-light.png',
+        'mic-recording.svg',
+        'mic.svg'
+    ];
+
+
+    for(var i = 0; i < images.length; i++){
+        var image = new Image();
+        image.onload = function () {
+            updateProgress();
+        };
+        image.src = 'images/' + images[i];
+    }
+}
 
 

@@ -1,6 +1,6 @@
 var pad = $('.pad');
 var pads = [];
-var selectedPadColor = 'grey';
+var selectedPadColor = '#878787';
 
 /*
  PAD STUFF
@@ -29,13 +29,14 @@ function keyHandler(e) {
         try {
             playSound(index);
             lightUpPad(index);
-            if (inputMode) {
-                toggleSequenced(inputIndex, index);
-                refreshSelectedPads(inputIndex);
-            }
-            if (recording) {
+
+            if (recording && sequencerOn) {
                 toggleSequenced(currentBeat, index);
-                refreshSelectedPads(currentBeat);
+                showSelectedPads(currentBeat);
+            }
+            else if (inputMode) {
+                toggleSequenced(inputIndex, index);
+                showSelectedPads(inputIndex);
             }
         } catch (e) {
         }
@@ -75,7 +76,7 @@ function clearPadStyles() {
     }
 }
 
-function refreshSelectedPads(beatIndex) {
+function showSelectedPads(beatIndex) {
     clearPadStyles();
     if (inputMode || recording) {
         for (var i = 0; i < sequencedSounds[beatIndex].length; i++) {
@@ -112,7 +113,7 @@ pad.click(function () {
     //If in input mode and click on the pad then just toggleSequenced it.
     if (inputMode) {
         toggleSequenced(inputIndex, index);
-        refreshSelectedPads(inputIndex);
+        showSelectedPads(inputIndex);
     }
 
     //Not in input mode so record into the pad
