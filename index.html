@@ -12,10 +12,17 @@
     <link rel="icon" href="https://tresdonjones.com/img/favicon.ico">
 
     <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', 'UA-101554390-1', 'auto');
         ga('send', 'pageview');
@@ -28,13 +35,20 @@
 
 
     <div class="row" style="margin-top: 1%;">
-        <div class="col-xs-6">
+        <div class="col-xs-10">
             <h1>Keybored</h1>
         </div>
-        <div class="col-xs-2" id="gui"></div>
-        <a class="col-xs-4" href="https://github.com/Tresdon/keybored" target="_blank">
-            <img class="img-responsive" id="github-icon" src="images/github-dark.png">
-        </a>
+
+        <div class="col-xs-1" >
+            <img data-step="11" data-intro="Lastly, to repeat this tutorial at any time just click on this
+        button right here! Happy noising :)" src="images/question-mark.svg" id="help" onclick="introJs().start();">
+        </div>
+
+        <div class="col-xs-1">
+            <a href="https://github.com/Tresdon/keybored" target="_blank">
+                <img class="img-responsive col-xs-12" id="github-icon" src="images/github-dark.png">
+            </a>
+        </div>
     </div>
 
     <div class="row">
@@ -124,7 +138,10 @@
                 <div class="col-xs-1 pad img-rounded">
                     <img class="mic-image" src="images/mic.svg">
                 </div>
-                <div class="col-xs-1 pad img-rounded">
+                <div class="col-xs-1 pad img-rounded" data-step="10"
+                     data-intro="If you're not a fan of these sounds you can record your own!
+                     Just click on the pad while there is no beat selected and make a noise.
+                     (You're gonna need to approve microphone access to use this feature)">
                     <img class="mic-image" src="images/mic.svg">
                 </div>
                 <div class="col-xs-1 pad img-rounded">
@@ -219,7 +236,7 @@
          data-intro="This is the sequencer. This is going to allow you to create some sick beats to show to your
          grandma, goldfish, government, etc. Click on one of these pads and then strike keys on your keyboard.
          From now on that sound will always play on this beat unless you unselect it (via striking the key again
-         or just clicking on it).">
+         or just clicking on it). Click on the pad again to unselect it.">
         <canvas class="col-xs-12" id="sequencerCanvas" resize></canvas>
     </div>
 
@@ -243,8 +260,8 @@
         </div>
 
         <div class="col-xs-1" data-step="6" data-position="top" data-intro="The record button. This will allow you to record your playing
-        into the sequencer directly. Press this button to arm the recording, then play the sequencer, and each sound
-        you play will be sequenced.">
+        into the sequencer directly. Pressing this button starts the sequencer and each sound you play will play at that beat in the future.
+        (While record is active and the sequencer is playing you cannot click a beat to select it for input.)">
             <button class="sequencer-control" id="record-button" onclick="toggleRecord()">
                 <img src="images/media_control_icons/record-black.svg">
             </button>
@@ -258,13 +275,13 @@
             </button>
             <p class="text-center">Metronome</p>
         </div>
-
-        <div class="col-xs-1 number-input text-center">
+        <div class="col-xs-1 number-input text-center" data-step="8" data-position="top"
+             data-intro="Change the volume!">
             <input class="sequencer-control " id="volume-input" value="40">%
             <p class="text-center">Volume</p>
         </div>
 
-        <div class="col-xs-1 number-input text-center">
+        <div class="col-xs-1 number-input text-center" data-step="9" data-position="top" data-intro="Change the tempo!">
             <input class="sequencer-control" id="bpm-input" value="120">
             <p class="text-center">BPM</p>
         </div>
@@ -278,7 +295,6 @@
 <script src="js/howler.min.js"></script>
 <script src="js/intro.min.js"></script>
 <script src="js/draggable-number.min.js"></script>
-<script src="js/dat.gui.min.js"></script>
 <script src="js/pads.js"></script>
 <script src="js/sequencer.js"></script>
 <script src="js/mic.js"></script>

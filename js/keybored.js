@@ -3,8 +3,6 @@
  */
 var context = undefined;
 var speakers = undefined;
-var mic = undefined;
-var micRecorder = undefined;
 
 var sounds = [];
 var soundNames = [];

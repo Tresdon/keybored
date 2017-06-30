@@ -89,19 +89,23 @@ function showSelectedPads(beatIndex) {
 pad.hover(
     //Mouse Enter
     function () {
-        //If there's nothing in the pad, show the mic icon
-        if (recordedSounds[pad.index(this)] == undefined && !inputMode) {
-            var micImage = this.children[0];
-            micImage.style.visibility = 'visible';
+        if(micAccess) {
+            //If there's nothing in the pad, show the mic icon
+            if (recordedSounds[pad.index(this)] == undefined && !inputMode) {
+                var micImage = this.children[0];
+                micImage.style.visibility = 'visible';
+            }
         }
     },
 
     //Mouse leave
     function () {
-        //If there's nothing in the pad, remove the mic icon
-        if (recordedSounds[pad.index(this)] == undefined) {
-            var micImage = this.children[0];
-            micImage.style.visibility = 'hidden';
+        if(micAccess) {
+            //If there's nothing in the pad, remove the mic icon
+            if (recordedSounds[pad.index(this)] == undefined) {
+                var micImage = this.children[0];
+                micImage.style.visibility = 'hidden';
+            }
         }
     }
 );
@@ -118,16 +122,21 @@ pad.click(function () {
 
     //Not in input mode so record into the pad
     else {
-        //No sample in pad yet, record one.
-        if (recordedSounds[index] == undefined) {
-            recordedSounds[index] = 'recording';
-            $(image).attr("src", "images/mic-recording.svg");
-            recordIntoPad(index);
-        }
-        //Sample in pad, clear it
-        else {
-            recordedSounds[index] = undefined;
-            $(image).attr("src", "images/mic.svg");
+        if(micAccess) {
+            //No sample in pad yet, record one.
+            if (recordedSounds[index] == undefined) {
+                recordedSounds[index] = 'recording';
+                $(image).attr("src", "images/mic-recording.svg");
+                recordIntoPad(index);
+            }
+            //Sample in pad, clear it
+            else {
+                recordedSounds[index] = undefined;
+                $(image).attr("src", "images/mic.svg");
+            }
+        } else {
+            console.log("Retrying microphone access...")
+            initMic();
         }
     }
 });

@@ -99,11 +99,23 @@ button {
 
 /* Images */
 #github-icon {
-    position: relative;
     float: right;
     max-height: 30px;
     width: auto;
-    margin-top:2%;
+    margin-top:50%;
+    margin-right: 50%;
+}
+
+#help {
+    float: left;
+    max-height: 30px;
+    width: auto;
+    margin-top:50%;
+    margin-left: 50%;
+}
+
+#help:hover {
+    cursor: pointer;
 }
 
 .mic-image {
