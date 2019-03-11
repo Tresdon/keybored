@@ -101,14 +101,13 @@ function updateProgress() {
 function preloadImages() {
     images = [
         'media_control_icons/metronome-black.svg',
-        'media_control_icons/metronome-yellow.svg',
+        'media_control_icons/metronome-blue.svg',
         'media_control_icons/pause-blue.svg',
         'media_control_icons/play-green.svg',
         'media_control_icons/record-red.svg',
         'media_control_icons/stop-red.svg',
         'clear.svg',
         'github-dark.png',
-        'github-light.png',
         'mic-recording.svg',
         'mic.svg'
     ];

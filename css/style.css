@@ -1,8 +1,8 @@
 /* Global */
 body {
-    background-color: #696969;
+    background-color: white;
     font-family: 'Lobster', cursive;
-    color: #FCF3CF;
+    color: darkblue;
     height: 100%;
     overflow-x: hidden;
 
@@ -32,12 +32,12 @@ h1 {
     padding-bottom: 5%;
     position: relative;
     animation-duration: 130ms;
-    border: 1px outset #FCF3CF;
+    border: 1px outset darkblue;
     margin-right: 1%;
 }
 
 .tooltip {
-    color: black;
+    color: lightgray;
 }
 
 
@@ -52,13 +52,13 @@ h1 {
 
 /* Inputs */
 button {
-    color: black;
+    color: gray;
 }
 
 /* Sequencer */
 #sequencer {
-    border-top: 2px double #FCF3CF;
-    border-bottom: 2px double #FCF3CF;
+    border-top: 2px double darkblue;
+    border-bottom: 2px double darkblue;
     margin: 2% 0%;
 }
 
@@ -70,7 +70,7 @@ button {
     width: 2%;
     padding-bottom: 2%;
     position: relative;
-    border: 1px dashed #FCF3CF;
+    border: 1px dashed darkblue;
     margin-right: 2%;
     -webkit-border-radius: 100%;
     -moz-border-radius: 100%;
@@ -126,7 +126,7 @@ button {
     left: 60%;
     z-index: 1;
     visibility: hidden;
-    fill: #FCF3CF;
+    fill: darkblue;
 }
 
 /* Misc */

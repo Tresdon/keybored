@@ -184,7 +184,7 @@ function toggleSequencer() {
 function toggleMetronome() {
     metronomeOn = !metronomeOn;
     if (metronomeOn) {
-        $('#metronome-button img').attr('src', 'images/media_control_icons/metronome-yellow.svg')
+        $('#metronome-button img').attr('src', 'images/media_control_icons/metronome-blue.svg')
     }
     else {
         $('#metronome-button img').attr('src', 'images/media_control_icons/metronome-black.svg')
@@ -391,7 +391,7 @@ $("#record-button").hover(function () {
 });
 
 $("#metronome-button").hover(function () {
-    $("#metronome-button img").attr('src', 'images/media_control_icons/metronome-yellow.svg')
+    $("#metronome-button img").attr('src', 'images/media_control_icons/metronome-blue.svg')
 }, function () {
     if (!metronomeOn) {
         $("#metronome-button img").attr('src', 'images/media_control_icons/metronome-black.svg')
